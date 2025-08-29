@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore.Storage;
+﻿using CheboksaryHalfMarathon.DAL.Repositories;
+using Microsoft.EntityFrameworkCore.Storage;
+using System.Reflection.Metadata.Ecma335;
 
 namespace CheboksaryHalfMarathon.DAL
 {
@@ -6,6 +8,7 @@ namespace CheboksaryHalfMarathon.DAL
     {
         private readonly HalfMarathonDbContext _context;
         private IDbContextTransaction? _transaction;
+
 
         public UnitOfWork(HalfMarathonDbContext context)
         {
@@ -36,6 +39,14 @@ namespace CheboksaryHalfMarathon.DAL
             await _transaction.RollbackAsync();
             _transaction.Dispose();
             _transaction = null;
+        }
+
+        public IUserRepository UserRepository
+        {
+            get
+            {
+                return new UserRepository(_context);
+            }
         }
 
         public async Task<int> SaveChangesAsync() => await _context.SaveChangesAsync();
